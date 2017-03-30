@@ -1,7 +1,25 @@
 Interval Tree Implementation in Java
 ====================================
 
-## Disclaimer
+## 2017 Update
+
+This project was initially created by Kevin Dolan in 2010, and has been forked and updated by David Palmer in 2017. 
+
+I found myself needing a quick way to find the country code of an IP, given a list of IP blocks and associated country codes. Kevin's project suited this need perfectly, so I adapted it. I wanted to support IPv4 and IPv6 however, which presented an annoying inefficiency. Supporting IPv6 meant I needed to move from using `long` like Kevin to `BigInteger` (because IPv6 is represented by 128 bits). This worked fine, but because I'd hardcoded `BigInteger` in to the class and I was also using it for IPv4, there was massive memory overhead (an `Integer` would be heaps more memory efficient for IPv4).
+
+The solution was to make the `IntervalTree` class accept any generic `Number` subclass for the intervals, and on the off-chance this is useful to anyone else I thought I'd throw it back up online. Plus the old library was written for Java 6, and I'm using Java 8.
+
+Major improvements include:
+ * use of generics so you can use any* arbitrary number type in your intervals (just specify a number type when you create the tree)
+ * updated to use Java 1.8 (not tested on previous versions)
+ * tests and maven integration
+ 
+Major drawbacks include:
+ * no support for primitives (added memory overhead)
+ 
+(\*Disclaimer: I say any `Number`, but specifically it must also satisfy `Comparable<N super Number>`, which is most of them luckily)
+
+## Original Disclaimer
 
 This project is no longer maintained or supported. If you find this useful and would like to contribute or submit a pull request, I will just make you a contributor.
 
@@ -13,7 +31,7 @@ Released under the [WTFPL](http://en.wikipedia.org/wiki/WTFPL).
 
 In a recent Java project, I found myself needing to store several intervals of time which I could access readily and efficiently.  I only needed to build the tree once, so a static data structure would work fine, but queries needed to be as efficient as possible.
 
-I found a data structure that accomplishes just this, and interval tree.
+I found a data structure that accomplishes just this, an interval tree.
 
 It’s a simple enough data structure, but I couldn’t find any Java implementations for it online.
 
@@ -23,49 +41,54 @@ It uses generic typing for the data object, but requires all the intervals to be
 
 It is a static data structure, meaning it must be rebuilt anytime a change is made to the underlying data.  Rebuilds happen automatically if you try to make a query and it is out-of-sync, but you can build manually by calling .build() if you want to, and you can find out if it is currently in-sync by calling .inSync().
 
-The following code snippet shows you how to use the library:
+## Usage
+The tree makes no effort to check that you are not mixing data types, so you should _always_ let the compiler know what you plan to store in it. Mixing data types for ranges is not supported, and may cause awkward `ClassCastException` errors, so proceed at your own risk.
+
+You must also supply a constructor for your chosen Number sub-type that represents zero. This is a side-effect of using generics and type erasure. For most number types you can just pass a lambda that creates a new zero-value object into the constructor of the Interval Tree:
 
 ```
-IntervalTree<Integer> it = new IntervalTree<Integer>;();
- 
-it.addInterval(0L,10L,1);
-it.addInterval(20L,30L,2);
-it.addInterval(15L,17L,3);
-it.addInterval(25L,35L,4);
-
-List result1 = it.get(5L);
-List result2 = it.get(10L);
-List result3 = it.get(29L);
-List result4 = it.get(5L,15L);
-
-System.out.println("Intervals that contain 5L:");
-for(int r : result1)
-    System.out.println(r);
-
-System.out.println("Intervals that contain 10L:");
-for(int r : result2)
-    System.out.println(r);
-
-System.out.println("Intervals that contain 29L:");
-for(int r : result3)
-    System.out.println(r);
-     
-System.out.println("Intervals that intersect (5L,15L):");
-for(int r : result4)
-    System.out.println(r);
+new IntervalTree<>( () -> Integer(0) );
+new IntervalTree<>( () -> Double(0.0) );
+new IntervalTree<>( () -> BigInteger.valueOf(0) );
+new IntervalTree<>( () -> BigDecimal.valueOf(0.0) );
+...etc...
 ```
 
-This code would output:
+To create an interval tree using ints for ranges and strings as data, simply, do this:
 
 ```
-Intervals that contain 5L:
-1
-Intervals that contain 10L:
-1
-Intervals that contain 29L:
-2
-4
-Intervals that intersect (5L,15L):
-3
-1
+IntervalTree<Integer, String> tree = new IntervalTree<>(() -> 0);
 ```
+
+Then you can add an interval like this:
+
+```
+tree.addInterval(5, 10, "This is the range of 5 to 10 inclusive");
+```
+
+Now you can query the tree like this:
+
+```
+tree.get(7);
+```
+
+This will return a `List` of data like this:
+
+```
+["This is the range of 5 to 10 inclusive"]
+```
+
+If you have overlapping ranges then `get()` will return multiple data values in the list, one for every range your query intersects. Its up to you to handle this list, including any the case where your value isn't in a range in the tree.
+
+A valid range is any two different numbers, where the first number comes before the second on the number line.
+
+More usage examples can be found in the `src/test/java/intervalTree` directory.
+
+## Deployment
+If you want the .jar and you have maven, simply run:
+
+```
+mvn install
+```
+
+from the project root. Otherwise who knows.
