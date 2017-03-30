@@ -2,11 +2,26 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>Interval Tree</name>
+    <description>A Java implementation of an Interval tree structure with generic Number support</description>
+    <url>https://github.com/cloventt/intervaltree</url>
 
     <artifactId>intervalTree</artifactId>
     <groupId>org.cloventt.misc</groupId>
     <version>2.0.0</version>
     <packaging>jar</packaging>
+
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/cloventt/intervaltree</url>
+    </scm>
 
     <dependencies>
         <dependency>
