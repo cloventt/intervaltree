@@ -187,6 +187,23 @@ public class IntervalTreeTest {
         assertEquals(expected, tree.get(135));
     }
 
+    @Test
+    public void intervalTreeTest_RangeOfSizeOne() {
+        IntervalTree<Integer, String> tree = new IntervalTree<>(() -> 0);
+        tree.addInterval(0, 10, "0-10");
+        tree.addInterval(10, 20, "10-20");
+        tree.addInterval(20, 30, "20-30");
+        tree.addInterval(30, 40, "30-40");
+        tree.addInterval(0, 100, "0-100");
+        tree.addInterval(32, 32, "32");
+
+        List<String> expected = new ArrayList<>();
+        expected.add("0-100");
+        expected.add("30-40");
+        expected.add("32");
+        assertEquals(expected, tree.get(32));
+    }
+
     @SuppressWarnings("unchecked")
     @Test(expected=ClassCastException.class)
     public void intervalTreeTest_MixedDataTypesNotSupported() {

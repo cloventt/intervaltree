@@ -40,7 +40,7 @@ public class IntervalTree<N extends Number & Comparable<N>, Type> {
 	public IntervalTree(List<Interval<N, Type>> intervalList, Supplier<N> supplier) {
 
 		for (Interval<N, Type> interval : intervalList) {
-			if ( interval.getEnd().compareTo(interval.getStart()) >= 0) {
+			if ( interval.getEnd().compareTo(interval.getStart()) > 0) {
 				throw new IllegalArgumentException("beginning of range must be less than end");
 			}
 		}
@@ -86,7 +86,7 @@ public class IntervalTree<N extends Number & Comparable<N>, Type> {
 	 * @return	  	the data associated with all intervals that intersect target
 	 */
 	public List<Type> get(N start, N end) {
-		if ( start.compareTo(end) >= 0) {
+		if ( start.compareTo(end) > 0) {
 			throw new IllegalArgumentException("beginning of range must be less than end");
 		}
 		build();
@@ -131,7 +131,7 @@ public class IntervalTree<N extends Number & Comparable<N>, Type> {
 	 * @param data	the data to associate
 	 */
 	public void addInterval(N begin, N end, Type data) {
-		if (begin.compareTo(end) < 0) {
+		if (end.compareTo(begin) >= 0) {
 			inSync = false;
 			intervalList.add(new Interval<>(begin, end, data));
 		} else {

@@ -73,7 +73,7 @@ public class Interval<N extends Number & Comparable<N>, Type> implements Compara
 	 * @return	true if this interval contains queryValue (inclusive)
 	 */
 	boolean contains(N queryValue) {
-		return queryValue.compareTo(end) < 0 && queryValue.compareTo(start) > 0;
+		return queryValue.compareTo(end) <= 0 && queryValue.compareTo(start) >= 0;
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public class Interval<N extends Number & Comparable<N>, Type> implements Compara
 	 * @return	return true if this interval intersects other
 	 */
 	boolean intersects(Interval<N, ?> other) {
-		return other.getEnd().compareTo(start) == 1 && other.getStart().compareTo(end) == -1;
+		return other.getEnd().compareTo(start) >= 0 && other.getStart().compareTo(end) <= 0;
 	}
 	
 	/**
@@ -96,10 +96,10 @@ public class Interval<N extends Number & Comparable<N>, Type> implements Compara
 		int startComparison = start.compareTo(other.getStart());
 		int endComparison = end.compareTo(other.getEnd());
 
-		if (startComparison == 0) {
-			return endComparison;
-		} else {
+		if (startComparison != 0) {
 			return startComparison;
+		} else {
+			return endComparison;
 		}
 	}
 	
