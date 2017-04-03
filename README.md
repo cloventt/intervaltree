@@ -5,7 +5,7 @@ Interval Tree Implementation in Java
 
 This project was initially created by Kevin Dolan in 2010, and has been forked and updated by David Palmer in 2017. 
 
-I found myself needing a quick way to find the country code of an IP, given a list of IP blocks and associated country codes. Kevin's project suited this need perfectly, so I adapted it. I wanted to support IPv4 and IPv6 however, which presented an annoying inefficiency. Supporting IPv6 meant I needed to move from using `long` like Kevin to `BigInteger` (because IPv6 is represented by 128 bits). This worked fine, but because I'd hardcoded `BigInteger` in to the class and I was also using it for IPv4, there was massive memory overhead (an `Integer` would be heaps more memory efficient for IPv4).
+I found myself needing a quick way to find the country code of an IP, given a list of IP blocks and associated country codes. Kevin's project suited this need perfectly, so I adapted it. I wanted to support IPv4 and IPv6 however, which presented an annoying inefficiency. Supporting IPv6 meant I needed to move from using `long` like Kevin to `BigInteger` (because IPv6 is represented by 128 bits). This worked fine, but because I'd hardcoded `BigInteger` in to the class and I was also using it for IPv4, there was massive memory overhead (an unsigned `Integer` would be heaps more memory efficient for IPv4).
 
 The solution was to make the `IntervalTree` class accept any generic `Number` subclass for the intervals, and on the off-chance this is useful to anyone else I thought I'd throw it back up online. Plus the old library was written for Java 6, and I'm using Java 8.
 
