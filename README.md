@@ -91,7 +91,23 @@ If you want the .jar and you have maven, simply run:
 mvn install
 ```
 
-from the project root. Otherwise who knows.
+from the project root. 
+
+It's also hosted in the Maven Central Repo, so you can include it in your Maven project by adding
+
+```
+<dependency>
+    <groupId>net.cloventt</groupId>
+    <artifactId>intervalTree</artifactId>
+    <version>2.0.3</version>
+</dependency>
+```
+
+to your `pom.xml`. Then you can import it just like anything else:
+
+```
+import intervalTree.IntervalTree;
+```
 
 ## License
 For the updated version I'm relicensing this to Apache 2.0. The original WTFPL license is great but some organisations may not permit the use of software with an untested license like that.
